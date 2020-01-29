@@ -14,9 +14,9 @@ const userSchema = mongoose.Schema({
 const questionSchema = mongoose.Schema({
   title: { type: String, required: true },
   question: { type: String, required: true },
+  total: { type: Number, default: 0 },
   votequestion: {
     up_vote: {
-      total: { type: Number, default: 0 },
       voters: [
         {
           user_id: { type: mongoose.SchemaTypes.ObjectId, ref: "User" }
@@ -24,7 +24,6 @@ const questionSchema = mongoose.Schema({
       ]
     },
     down_vote: {
-      total: { type: Number, default: 0 },
       voters: [
         {
           user_id: { type: mongoose.SchemaTypes.ObjectId, ref: "User" }
@@ -33,18 +32,18 @@ const questionSchema = mongoose.Schema({
     }
   },
   userId: { type: mongoose.SchemaTypes.ObjectId, ref: "User", required: true },
-  answers: {
+  answerId:[{
     type: mongoose.SchemaTypes.ObjectId,
-    ref: "Answer",
+    ref: "Answ er",
     default: "none"
-  }
+  }]
 });
 
 //Answers schema model
 const answerSchema = mongoose.Schema({
-  body: { type: String, required: true },
+  body: { type: String, required: true, required: true },
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  question: { type: Schema.Types.ObjectId, ref: "Question", required: true }
+  questionId: { type: Schema.Types.ObjectId, ref: "Question", required: true }
 });
 
 module.exports = {

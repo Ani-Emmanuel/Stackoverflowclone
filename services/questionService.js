@@ -50,14 +50,13 @@ module.exports = {
       payload = req.body;
       if (payload.votequestion == "like") {
         questionUpdate = await Question.find({ _id: questionId });
-        questionUpdate.up_vote.total = Number(questionUpdate.up_vote.total) + 1;
-        questionUpdate.up_vote.voters.push(userId);
+        questionUpdate.total = Number(questionUpdate.total) + 1;
+        questionUpdate.up_vote.voters.push(userId); //still to impliment the userid
       }
       if (payload.votequestion == "dislike") {
         questionUpdate = await Question.find({ _id: questionId });
-        questionUpdate.down_vote.total =
-          Number(questionUpdate.down_vote.total) - 1;
-        questionUpdate.down_vote.voters.push(userId);
+        questionUpdate.total = Number(questionUpdate.total) - 1;
+        questionUpdate.down_vote.voters.push(userId); //still to impliment the userid
       }
       payload.votequestion = questionUpdate;
       const question = await Question.findByIdAndUpdate(
