@@ -37,6 +37,13 @@ module.exports = {
           _id: req.params.userId
         };
       }
+
+      //check for query string
+      if (req.query.name) {
+        const users = await User.find({ firstname: new RegExp(req.query.name, "gi") });
+        return res.status(200).json({ payload: { users: users } });
+      }
+
       const users = await User.find(query);
       res.status(200).json({ payload: { users: users } });
     } catch (error) {

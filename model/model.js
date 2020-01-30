@@ -21,16 +21,15 @@ const questionSchema = mongoose.Schema(
       total: { type: Number, default: 0 },
       up_vote: {
         voters: [
-          {
-            user_id: { type: mongoose.SchemaTypes.ObjectId, ref: "User", default: null }
-          }
+
+          { type: mongoose.SchemaTypes.ObjectId, ref: "User", default: null }
         ]
       },
       down_vote: {
         voters: [
-          {
-            user_id: { type: mongoose.SchemaTypes.ObjectId, ref: "User" , default: null}
-          }
+
+          { type: mongoose.SchemaTypes.ObjectId, ref: "User", default: null }
+
         ]
       }
     },

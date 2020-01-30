@@ -5,10 +5,18 @@ module.exports = {
   getQuestion: async (req, res, next) => {
     try {
       query = {};
+      //check if req.params exist
       if (req.params.questionId) {
         const { questionId } = req.params;
         query._id = questionId;
       }
+
+      //check for query string
+      if (req.query.title) {
+        const askedQuestion = await Question.find({ title: new RegExp(req.query.title, "gi") });
+        return res.status(200).json({ payload: { data: askedQuestion } });
+      }
+
       const askedQuestion = await Question.find(query);
       res.status(200).json({ payload: { data: askedQuestion } });
     } catch (error) {
@@ -84,10 +92,9 @@ module.exports = {
         });
       }
 
-      const question = await Question.findByIdAndUpdate(
-        { _id: questionId },
-        payload
-      );
+      await Question.findByIdAndUpdate({ _id: questionId }, payload);
+      const question = await Question.findOne({ _id: questionId });
+
       res.status(200).json({
         message: "Question updated successfully",
         payload: { data: question }
