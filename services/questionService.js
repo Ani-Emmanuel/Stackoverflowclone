@@ -17,8 +17,10 @@ module.exports = {
   },
 
   //function for creating questions
-  askQuestion: async (req, res, next) => {
+  askQuestion: async (verify, req, res, next) => {
     try {
+      const payload = req.body;
+      payload.userId = verify._id;
       const question = new Question(req.body);
       const createQuestion = await question.save();
       res.status(201).json({
@@ -31,7 +33,7 @@ module.exports = {
   },
 
   //function for deleting one question
-  deleteQuestion: async (req, res, next) => {
+  deleteQuestion: async (verify, req, res, next) => {
     try {
       const { questionId } = req.params;
       await Question.findByIdAndDelete({ _id: questionId });
@@ -42,23 +44,46 @@ module.exports = {
   },
 
   //function for updating one question
-  updateQuestion: async (req, res, next) => {
+  updateQuestion: async (verify, req, res, next) => {
     try {
       const { questionId } = req.params;
       let questionUpdate = {},
-        payload;
-      payload = req.body;
+        payload = req.body;
+
+      //checks and update likes for questions
       if (payload.votequestion == "like") {
-        questionUpdate = await Question.find({ _id: questionId });
-        questionUpdate.total = Number(questionUpdate.total) + 1;
-        questionUpdate.up_vote.voters.push(userId); //still to impliment the userid
+        questionUpdate = await Question.findOne({ _id: questionId });
+        questionUpdate.votequestion.total =
+          Number(questionUpdate.votequestion.total) + 1;
+        questionUpdate.votequestion.up_vote.voters.push(verify._id);
+
+        payload.votequestion = questionUpdate.votequestion;
+        await Question.findByIdAndUpdate({ _id: questionId }, payload);
+
+        const question = await Question.findOne({ _id: questionId });
+        return res.status(200).json({
+          message: "Question updated successfully",
+          payload: { data: question }
+        });
       }
+
+      //checks and update dislikes for questions
       if (payload.votequestion == "dislike") {
-        questionUpdate = await Question.find({ _id: questionId });
-        questionUpdate.total = Number(questionUpdate.total) - 1;
-        questionUpdate.down_vote.voters.push(userId); //still to impliment the userid
+        questionUpdate = await Question.findOne({ _id: questionId });
+        questionUpdate.votequestion.total =
+          Number(questionUpdate.votequestion.total) - 1;
+        questionUpdate.votequestion.down_vote.voters.push(verify._id);
+
+        payload.votequestion = questionUpdate.votequestion;
+        await Question.findByIdAndUpdate({ _id: questionId }, payload);
+
+        const question = await Question.findOne({ _id: questionId });
+        return res.status(200).json({
+          message: "Question updated successfully",
+          payload: { data: question }
+        });
       }
-      payload.votequestion = questionUpdate;
+
       const question = await Question.findByIdAndUpdate(
         { _id: questionId },
         payload

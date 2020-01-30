@@ -1,4 +1,5 @@
 const { User } = require("../model/model");
+const bcrypt = require("bcryptjs");
 const { hashOperation } = require("../helper/helper");
 module.exports = {
   //function for registering as a user
@@ -7,7 +8,7 @@ module.exports = {
       //check if user already exist
       const { email } = req.body;
       const emailExist = await User.findOne({ email: email });
-      if (emailExist || emailExist.length > 0) {
+      if (emailExist) {
         return res
           .status(400)
           .json({ message: "User with email already exists" });
@@ -17,6 +18,7 @@ module.exports = {
       const user = new User(req.body);
       const { password } = user;
       const hashedpass = await hashOperation(password);
+      console.log(hashedpass);
       user.password = hashedpass;
       user.save();
       res.status(201).json({ message: "User created successfully" });
@@ -30,9 +32,9 @@ module.exports = {
     try {
       let query = {};
       //check if req.params exist
-      if (req.params.id) {
+      if (req.params.userId) {
         query = {
-          _id: req.params.id
+          _id: req.params.userId
         };
       }
       const users = await User.find(query);
@@ -45,8 +47,10 @@ module.exports = {
   //function for updateing one users
   updateUser: async (req, res, next) => {
     try {
-      const { id } = req.params;
-      const user = await User.findByIdAndUpdate(id, req.body, { new: true });
+      const { userId } = req.params;
+      const user = await User.findByIdAndUpdate(userId, req.body, {
+        new: true
+      });
       res.status(200).json({ message: "User updated successfully" });
     } catch (error) {
       next(error);
@@ -56,8 +60,8 @@ module.exports = {
   //function for deleting a users
   deleteUser: async (req, res, next) => {
     try {
-      const { id } = req.params;
-      await User.findByIdAndDelete(id);
+      const { userId } = req.params;
+      await User.findByIdAndDelete(userId);
       res.status(200).json({ message: "User deleted successfully" });
     } catch (error) {
       next(error);
