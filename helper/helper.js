@@ -41,18 +41,18 @@ const verification = async (req, res, next) => {
 const emailSubscription = async document => {
   const { email } = document;
   let transporter = nodemailer.createTransport({
-    // host: "smtp.gmail.com",
-    // port: 465,
-    // secure: false,
-    // auth: {
-    //   user: "your.gmail.account@gmail.com", // like : abc@gmail.com
-    //   pass: "your.gmailpassword" // like : pass@123
-    // }
-    host: "localhost",
-    port: 25,
-    tls: {
-      rejectUnauthorized: false
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: false,
+    auth: {
+      user: process.env.email, // like : abc@gmail.com
+      pass: process.env.password // like : pass@123
     }
+    //   host: "localhost",
+    //   port: 25,
+    //   tls: {
+    //     rejectUnauthorized: false
+    //   }
   });
 
   const config = {
@@ -67,4 +67,4 @@ const emailSubscription = async document => {
   });
 };
 
-module.exports = { hashOperation, comparePass, tokenGen, verification };
+module.exports = { hashOperation, comparePass, tokenGen, verification, emailSubscription };

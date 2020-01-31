@@ -1,4 +1,5 @@
 const { Answer, Question } = require("../model/model");
+const { emailSubscription } = require("../helper/helper")
 
 module.exports = {
   AnswerQuestion: async (verify, req, res, next) => {
@@ -13,6 +14,10 @@ module.exports = {
       question.answerId.push(answer._id); //updating the answerId field in the question schema
       await question.save();
       const answered = await answer.save();
+      
+      if(question.subcribe){
+        emailSubscription(question)
+      }
 
       res
         .status(201)
