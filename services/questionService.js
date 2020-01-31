@@ -11,12 +11,6 @@ module.exports = {
         query._id = questionId;
       }
 
-      //check for query string
-      if (req.query.title) {
-        const askedQuestion = await Question.find({ title: new RegExp(req.query.title, "gi") });
-        return res.status(200).json({ payload: { data: askedQuestion } });
-      }
-
       const askedQuestion = await Question.find(query);
       res.status(200).json({ payload: { data: askedQuestion } });
     } catch (error) {

@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 
 //function for hashing password before storing
 const hashOperation = async password => {
@@ -34,6 +35,36 @@ const verification = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+//Scribe for Email
+const emailSubscription = async document => {
+  const { email } = document;
+  let transporter = nodemailer.createTransport({
+    // host: "smtp.gmail.com",
+    // port: 465,
+    // secure: false,
+    // auth: {
+    //   user: "your.gmail.account@gmail.com", // like : abc@gmail.com
+    //   pass: "your.gmailpassword" // like : pass@123
+    // }
+    host: "localhost",
+    port: 25,
+    tls: {
+      rejectUnauthorized: false
+    }
+  });
+
+  const config = {
+    from: "noreply@domain.com",
+    to: `${email}`,
+    subject: "Some one answered your question",
+    html: "<p>Login to your account to check the answer</p>"
+  };
+
+  transporter.sendMail(config).catch(e => {
+    console.log(e);
+  });
 };
 
 module.exports = { hashOperation, comparePass, tokenGen, verification };

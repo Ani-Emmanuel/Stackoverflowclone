@@ -3,6 +3,7 @@ const bodyparser = require("body-parser");
 const userRoute = require("./routes/userRoute");
 const questionRoute = require("./routes/questionRoute");
 const answerRoute = require("./routes/answerRoute");
+const searchRoute = require("./routes/searchRoute");
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(bodyparser.urlencoded({ extended: true }));
 app.use("/user", userRoute);
 app.use("/question", questionRoute);
 app.use("/answer", answerRoute);
+app.use("/search", searchRoute);
 
 //catching not found errors
 app.use((req, res, next) => {

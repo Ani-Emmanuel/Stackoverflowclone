@@ -17,19 +17,17 @@ const questionSchema = mongoose.Schema(
   {
     title: { type: String, required: true },
     question: { type: String, required: true },
+    subcribe: { type: Boolean, default: false },
     votequestion: {
       total: { type: Number, default: 0 },
       up_vote: {
         voters: [
-
           { type: mongoose.SchemaTypes.ObjectId, ref: "User", default: null }
         ]
       },
       down_vote: {
         voters: [
-
           { type: mongoose.SchemaTypes.ObjectId, ref: "User", default: null }
-
         ]
       }
     },
@@ -66,6 +64,16 @@ const answerSchema = mongoose.Schema(
   },
   { timestamps: true }
 );
+
+//creating index for search in the schemas
+userSchema.indexes({
+  firstname: "text",
+  lastname: "text",
+  middlename: "text",
+  email: "text"
+});
+questionSchema.indexes({ title: "text", question: "text" });
+answerSchema.indexes({ body: "text" });
 
 module.exports = {
   User: mongoose.model("User", userSchema),
