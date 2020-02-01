@@ -10,6 +10,6 @@ Router.route("/delete/:answerId").delete(
   verification,
   answerService.deleteAnswer
 );
-Router.route("/update/:answerId").put(varification, answerService.updateAnswer);
+Router.route("/update/:answerId").put(verification, answerService.updateAnswer);
 
 module.exports = Router;
