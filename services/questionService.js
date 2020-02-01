@@ -1,4 +1,5 @@
-const { User, Question } = require("../model/model");
+const { Question } = require("../model/model");
+const { upvote_or_downvote } = require("../helper/helper");
 
 module.exports = {
   //function for get one or all questions
@@ -49,41 +50,11 @@ module.exports = {
   updateQuestion: async (verify, req, res, next) => {
     try {
       const { questionId } = req.params;
-      let questionUpdate = {},
-        payload = req.body;
+      payload = req.body;
 
-      //checks and update likes for questions
-      if (payload.votequestion == "like") {
-        questionUpdate = await Question.findOne({ _id: questionId });
-        questionUpdate.votequestion.total =
-          Number(questionUpdate.votequestion.total) + 1;
-        questionUpdate.votequestion.up_vote.voters.push(verify._id);
-
-        payload.votequestion = questionUpdate.votequestion;
-        await Question.findByIdAndUpdate({ _id: questionId }, payload);
-
-        const question = await Question.findOne({ _id: questionId });
-        return res.status(200).json({
-          message: "Question updated successfully",
-          payload: { data: question }
-        });
-      }
-
-      //checks and update dislikes for questions
-      if (payload.votequestion == "dislike") {
-        questionUpdate = await Question.findOne({ _id: questionId });
-        questionUpdate.votequestion.total =
-          Number(questionUpdate.votequestion.total) - 1;
-        questionUpdate.votequestion.down_vote.voters.push(verify._id);
-
-        payload.votequestion = questionUpdate.votequestion;
-        await Question.findByIdAndUpdate({ _id: questionId }, payload);
-
-        const question = await Question.findOne({ _id: questionId });
-        return res.status(200).json({
-          message: "Question updated successfully",
-          payload: { data: question }
-        });
+      //checks for upvote or downvote runs the function
+      if ("votequestion" in payload) {
+        return upvote_or_downvote(req, res, verify, payload);
       }
 
       await Question.findByIdAndUpdate({ _id: questionId }, payload);

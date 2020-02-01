@@ -1,5 +1,5 @@
 const { Answer, Question } = require("../model/model");
-const { emailSubscription } = require("../helper/helper")
+const { emailSubscription } = require("../helper/helper");
 
 module.exports = {
   AnswerQuestion: async (verify, req, res, next) => {
@@ -14,17 +14,15 @@ module.exports = {
       question.answerId.push(answer._id); //updating the answerId field in the question schema
       await question.save();
       const answered = await answer.save();
-      
-      if(question.subcribe){
-        emailSubscription(question)
+
+      if (question.subscribe) {
+        emailSubscription(question);
       }
 
-      res
-        .status(201)
-        .json({
-          message: "Thank you for you answer",
-          payload: { data: answered }
-        });
+      res.status(201).json({
+        message: "Thank you for you answer",
+        payload: { data: answered }
+      });
     } catch (error) {
       next(error);
     }
@@ -48,12 +46,10 @@ module.exports = {
         { _id: answerId },
         payload
       );
-      res
-        .status(200)
-        .json({
-          message: "Answer updated successfully",
-          payload: { data: updatedAnswer }
-        });
+      res.status(200).json({
+        message: "Answer updated successfully",
+        payload: { data: updatedAnswer }
+      });
     } catch (error) {
       next(error);
     }

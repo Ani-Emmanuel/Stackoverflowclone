@@ -17,7 +17,7 @@ const questionSchema = mongoose.Schema(
   {
     title: { type: String, required: true },
     question: { type: String, required: true },
-    subcribe: { type: Boolean, default: false },
+    subscribe: { type: Boolean, default: false },
     votequestion: {
       total: { type: Number, default: 0 },
       up_vote: {

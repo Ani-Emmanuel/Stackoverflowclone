@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const { Question } = require("../model/model");
 
 //function for hashing password before storing
 const hashOperation = async password => {
@@ -37,26 +38,61 @@ const verification = async (req, res, next) => {
   }
 };
 
+//upvote and downvote function
+const upvote_or_downvote = async (req, res, verify, payload) => {
+  let questionUpdate = {};
+  const { questionId } = req.params;
+
+  //checks and update likes for questions
+  if (payload.votequestion == "like") {
+    questionUpdate = await Question.findOne({ _id: questionId });
+    questionUpdate.votequestion.total =
+      Number(questionUpdate.votequestion.total) + 1;
+    questionUpdate.votequestion.up_vote.voters.push(verify._id);
+
+    payload.votequestion = questionUpdate.votequestion;
+    await Question.findByIdAndUpdate({ _id: questionId }, payload);
+
+    const question = await Question.findOne({ _id: questionId });
+    return res.status(200).json({
+      message: "Question updated successfully",
+      payload: { data: question }
+    });
+  }
+
+  //checks and update dislikes for questions
+  if (payload.votequestion == "dislike") {
+    questionUpdate = await Question.findOne({ _id: questionId });
+    questionUpdate.votequestion.total =
+      Number(questionUpdate.votequestion.total) - 1;
+    questionUpdate.votequestion.down_vote.voters.push(verify._id);
+
+    payload.votequestion = questionUpdate.votequestion;
+    await Question.findByIdAndUpdate({ _id: questionId }, payload);
+
+    const question = await Question.findOne({ _id: questionId });
+    return res.status(200).json({
+      message: "Question updated successfully",
+      payload: { data: question }
+    });
+  }
+};
+
 //Scribe for Email
 const emailSubscription = async document => {
   const { email } = document;
   let transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
+    host: "smtp.mail.yahoo.com",
     port: 465,
-    secure: false,
+    secure: true,
     auth: {
-      user: process.env.email, // like : abc@gmail.com
-      pass: process.env.password // like : pass@123
+      user: process.env.EMAIL, // like : abc@gmail.com
+      pass: process.env.PASSWORD // like : pass@123
     }
-    //   host: "localhost",
-    //   port: 25,
-    //   tls: {
-    //     rejectUnauthorized: false
-    //   }
   });
 
   const config = {
-    from: "noreply@domain.com",
+    from: `${process.env.EMAIL}`,
     to: `${email}`,
     subject: "Some one answered your question",
     html: "<p>Login to your account to check the answer</p>"
@@ -67,4 +103,11 @@ const emailSubscription = async document => {
   });
 };
 
-module.exports = { hashOperation, comparePass, tokenGen, verification, emailSubscription };
+module.exports = {
+  hashOperation,
+  comparePass,
+  tokenGen,
+  verification,
+  emailSubscription,
+  upvote_or_downvote
+};

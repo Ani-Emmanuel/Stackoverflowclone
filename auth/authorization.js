@@ -25,7 +25,7 @@ module.exports = {
       //Generating token and login the loggin the user in
       const token = await tokenGen(user._id);
       res.header("auth-token", token);
-      res.status(200).json({
+      res.status(201).json({
         message: "You are loggedin successfully",
         token: { data: token }
       });
