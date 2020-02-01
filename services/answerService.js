@@ -28,7 +28,7 @@ module.exports = {
     }
   },
 
-  deleteAnswer: async (req, res, next) => {
+  deleteAnswer: async (verify, req, res, next) => {
     try {
       const { answerId } = req.params;
       await Answer.findByIdAndDelete({ _id: answerId });
@@ -38,7 +38,7 @@ module.exports = {
     }
   },
 
-  updateAnswer: async (req, res, next) => {
+  updateAnswer: async (verify, req, res, next) => {
     try {
       const { answerId } = req.params;
       const payload = req.body;
