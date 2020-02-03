@@ -34,4 +34,7 @@ app.use((err, req, res, nexr) => {
   res.status(status).json({ error: { message: error.message } });
 });
 
-app.listen(port, () => console.log(`Server started on localhost:${port}`));
+module.exports = app;
+// app.listen(port, () => console.log(`Server started on localhost:${port}`));
+
+

@@ -18,7 +18,6 @@ module.exports = {
       const user = new User(req.body);
       const { password } = user;
       const hashedpass = await hashOperation(password);
-      console.log(hashedpass);
       user.password = hashedpass;
       user.save();
       res.status(201).json({ message: "User created successfully" });

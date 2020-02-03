@@ -6,7 +6,7 @@ module.exports = {
   getQuestion: async (req, res, next) => {
     try {
       query = {};
-      //check if req.params exist
+      //checks to know if the question ID is pased so it can find by ID else it will match all 
       if (req.params.questionId) {
         const { questionId } = req.params;
         query._id = questionId;
@@ -23,7 +23,7 @@ module.exports = {
   askQuestion: async (verify, req, res, next) => {
     try {
       const payload = req.body;
-      payload.userId = verify._id;
+      payload.userId = verify._id; //Updating the payload with the ID of the user that asked the question
       const question = new Question(req.body);
       const createQuestion = await question.save();
       res.status(201).json({

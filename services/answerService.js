@@ -1,4 +1,4 @@
-const { Answer, Question } = require("../model/model");
+const { Answer, Question, User } = require("../model/model");
 const { emailSubscription } = require("../helper/helper");
 
 module.exports = {
@@ -15,8 +15,11 @@ module.exports = {
       await question.save();
       const answered = await answer.save();
 
+      //check to know if the user that asked the question subscribed for email notification and send email
       if (question.subscribe) {
-        emailSubscription(question);
+        const { userId } = question //Getting the ID of the user that asked the question 
+        const user = await User.findById({_id: userId}) //Finding the User by Its ID
+        emailSubscription(user);
       }
 
       res.status(201).json({

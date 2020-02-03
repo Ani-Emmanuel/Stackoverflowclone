@@ -16,13 +16,13 @@ const comparePass = async (password, hashedpass) => {
   return passwordChecker;
 };
 
-//function for generating jsonwebtoken using user Id
+//function for generating jsonwebtoken using user ID
 const tokenGen = async id => {
   const token = await jwt.sign({ _id: id }, process.env.SECRET);
   return token;
 };
 
-//middleware that verify token
+//middleware that verify token then passes the payload down through next
 const verification = async (req, res, next) => {
   const token = req.header("auth-token");
   if (!token) {
@@ -43,14 +43,14 @@ const upvote_or_downvote = async (req, res, verify, payload) => {
   let questionUpdate = {};
   const { questionId } = req.params;
 
-  //checks and update likes for questions
-  if (payload.votequestion == "like") {
+  //checks and update upvote for questions
+  if (payload.votequestion == "upvote") {
     questionUpdate = await Question.findOne({ _id: questionId });
     questionUpdate.votequestion.total =
-      Number(questionUpdate.votequestion.total) + 1;
-    questionUpdate.votequestion.up_vote.voters.push(verify._id);
+      Number(questionUpdate.votequestion.total) + 1; //Updating the total vote count
+    questionUpdate.votequestion.up_vote.voters.push(verify._id); //Adding the ID of the user that upvoted
 
-    payload.votequestion = questionUpdate.votequestion;
+    payload.votequestion = questionUpdate.votequestion; //Update the payload votequestion document
     await Question.findByIdAndUpdate({ _id: questionId }, payload);
 
     const question = await Question.findOne({ _id: questionId });
@@ -60,14 +60,15 @@ const upvote_or_downvote = async (req, res, verify, payload) => {
     });
   }
 
-  //checks and update dislikes for questions
-  if (payload.votequestion == "dislike") {
+
+  //checks and update downvote for questions
+  if (payload.votequestion == "downvote") {
     questionUpdate = await Question.findOne({ _id: questionId });
     questionUpdate.votequestion.total =
-      Number(questionUpdate.votequestion.total) - 1;
-    questionUpdate.votequestion.down_vote.voters.push(verify._id);
+      Number(questionUpdate.votequestion.total) - 1;  //Updating the total count 
+    questionUpdate.votequestion.down_vote.voters.push(verify._id); //Adding the ID of the user that down voted
 
-    payload.votequestion = questionUpdate.votequestion;
+    payload.votequestion = questionUpdate.votequestion; // Updating the payload votequestion document
     await Question.findByIdAndUpdate({ _id: questionId }, payload);
 
     const question = await Question.findOne({ _id: questionId });
