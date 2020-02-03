@@ -22,9 +22,9 @@ it("Should create Question", async done => {
 })
 
 //Test to for creating question when loggedin
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTM3NDBmNzg4NDFjYjI5ODhhNTYyMmMiLCJpYXQiOjE1ODA2ODUwNjJ9.DLoLzqCXX1g1c2jIFCnQ7zPcA8haNPpZPy-KRGONsbM'
+
 it("Should create Question", async done => {
-    const res = await request.post("/question/create").set("auth-token", token).send({
+    const res = await request.post("/question/create").set("auth-token", process.env.token).send({
         title: "Unit Testing",
         question: "Going to fail because the user is not logged in"
     })
@@ -63,9 +63,12 @@ it("Should update question", async done => {
 
 //Test for updating one question with token
 it("Should update question", async done => {
-    const res = await request.put("/question/5e3758ce1696323ad123da29").set("auth-token", token).send({
+    const res = await request
+      .put("/question/5e3758ce1696323ad123da29")
+      .set("auth-token", process.env.token)
+      .send({
         votequestion: "upvote"
-    })
+      });
     let { message } = JSON.parse(res.text);
     expect(message).toEqual("Question updated successfully")
     expect(res.status).toBe(200)
@@ -84,7 +87,9 @@ it("Should delete question", async done => {
 
 //Test for updating one question with token
 it("Should delete question", async done => {
-    const res = await request.delete("/question/delete/5e3757c74eb61935c0b05304").set("auth-token", token)
+    const res = await request
+      .delete("/question/delete/5e3757c74eb61935c0b05304")
+      .set("auth-token", process.env.token);
     let { message } = JSON.parse(res.text);
     expect(message).toEqual("Question deleted successfully")
     expect(res.status).toBe(200)

@@ -9,9 +9,6 @@ beforeAll(async () => {
   mongoose.connect(url, { useNewUrlParser: true });
 });
 
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTM3NDBmNzg4NDFjYjI5ODhhNTYyMmMiLCJpYXQiOjE1ODA2ODUwNjJ9.DLoLzqCXX1g1c2jIFCnQ7zPcA8haNPpZPy-KRGONsbM";
-
 //Test for proving with out login and getting token you can not create question
 it("Should create Answer fail", async done => {
   const res = await request.post("/answer/5e3758ce1696323ad123da29").send({
@@ -28,7 +25,7 @@ it("Should create Answer fail", async done => {
 it("Should create Answer pass", async done => {
   const res = await request
     .post("/answer/5e3758ce1696323ad123da29")
-    .set("auth-token", token)
+    .set("auth-token", process.env.token)
     .send({
       body: "Answer your question"
     });
@@ -61,7 +58,7 @@ it("Should get all Answer pass", async done => {
 it("Should get one Answer pass", async done => {
   const res = await request
     .put("/answer/update/5e3758ce1696323ad123da29")
-    .set("auth-token", token)
+    .set("auth-token", process.env.token)
     .send({
       body: "Updated"
     });
@@ -75,7 +72,7 @@ it("Should get one Answer pass", async done => {
 it("Should get one Answer pass", async done => {
   const res = await request
     .put("/answer/update/5e3758ce1696323ad123da29")
-    .set("auth-token", token)
+    .set("auth-token", process.env.token)
     .send({
       body: "Updated"
     });
@@ -90,7 +87,7 @@ it("Should get one Answer pass", async done => {
 it("Should get one Answer pass", async done => {
   const res = await request
     .put("/answer/delete/5e3758ce1696323ad123da29")
-    .set("auth-token", token)
+    .set("auth-token", process.env.token)
     .send({
       body: "Updated"
     });
