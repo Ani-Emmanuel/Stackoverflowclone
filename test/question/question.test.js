@@ -82,11 +82,11 @@ it("Should delete question", async done => {
 })
 
 
-// //Test for updating one question with token
-// it("Should delete question", async done => {
-//     const res = await request.delete("/question/delete/5e3757c74eb61935c0b05304").set("auth-token", token)
-//     let { message } = JSON.parse(res.text);
-//     expect(message).toEqual("Question deleted successfully")
-//     expect(res.status).toBe(200)
-//     done()
-// })
+//Test for updating one question with token
+it("Should delete question", async done => {
+    const res = await request.delete("/question/delete/5e3757c74eb61935c0b05304").set("auth-token", token)
+    let { message } = JSON.parse(res.text);
+    expect(message).toEqual("Question deleted successfully")
+    expect(res.status).toBe(200)
+    done()
+})
