@@ -2,6 +2,8 @@
 
 This project is an Api based test project that focuses on some of the features of stackoverflow.
 
+This project mimic some of the features of Stackoverflow like SignUp with JWT, ask Questions, if subscribe for notification you will get notification when your question is answered. Answer Question and you need your token to perform create,update and delete on Question and answer
+
 *Features like:*
 
 - User signup
