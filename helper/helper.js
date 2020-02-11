@@ -46,6 +46,15 @@ const upvote_or_downvote = async (req, res, verify, payload) => {
   //checks and update upvote for questions
   if (payload.votequestion == "upvote") {
     questionUpdate = await Question.findOne({ _id: questionId });
+
+    //check and remove the ID of the voter if they have already voted down
+    if (questionUpdate.votequestion.down_vote.voters.indexOf(verify._id) > -1) {
+      const index = questionUpdate.votequestion.down_vote.voters.indexOf(
+        verify._id
+      );
+      questionUpdate.votequestion.down_vote.voters.splice(index, 1);
+    }
+
     questionUpdate.votequestion.total =
       Number(questionUpdate.votequestion.total) + 1; //Updating the total vote count
     questionUpdate.votequestion.up_vote.voters.push(verify._id); //Adding the ID of the user that upvoted
@@ -60,12 +69,20 @@ const upvote_or_downvote = async (req, res, verify, payload) => {
     });
   }
 
-
   //checks and update downvote for questions
   if (payload.votequestion == "downvote") {
     questionUpdate = await Question.findOne({ _id: questionId });
+
+    //check and remove the ID of the voter if they have already voted up
+    if (questionUpdate.votequestion.up_vote.voters.indexOf(verify._id) > -1) {
+      const index = questionUpdate.votequestion.up_vote.voters.indexOf(
+        verify._id
+      );
+      questionUpdate.votequestion.up_vote.voters.splice(index, 1);
+    }
+
     questionUpdate.votequestion.total =
-      Number(questionUpdate.votequestion.total) - 1;  //Updating the total count 
+      Number(questionUpdate.votequestion.total) - 1; //Updating the total count
     questionUpdate.votequestion.down_vote.voters.push(verify._id); //Adding the ID of the user that down voted
 
     payload.votequestion = questionUpdate.votequestion; // Updating the payload votequestion document
