@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { User } = require("../model/model");
+const { User } = require("../model");
 const { tokenGen, comparePass } = require("../helper/helper");
 
 module.exports = {

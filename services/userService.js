@@ -33,7 +33,7 @@ module.exports = {
       //check if req.params exist
       if (req.params.userId) {
         query = {
-          _id: req.params.userId
+          _id: req.params.userId,
         };
       }
 
@@ -49,7 +49,7 @@ module.exports = {
     try {
       const { userId } = req.params;
       const user = await User.findByIdAndUpdate(userId, req.body, {
-        new: true
+        new: true,
       });
       res.status(200).json({ message: "User updated successfully" });
     } catch (error) {
@@ -66,5 +66,5 @@ module.exports = {
     } catch (error) {
       next(error);
     }
-  }
+  },
 };
